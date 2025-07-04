@@ -1,0 +1,117 @@
+services:
+    app:
+        build:
+            context: .docker/app
+            dockerfile: local.Dockerfile
+            args:
+                WWWUSER: '${WWWUSER:-1000}'
+                WWWGROUP: '${WWWGROUP:-1000}'
+        container_name: laravel-app
+        restart: unless-stopped
+        working_dir: /var/www/html
+        volumes:
+            - '.:/var/www/html'
+        command: ["sh", "-c", "composer install && php-fpm"]
+        depends_on:
+            - postgres
+            - redis
+        networks:
+            - laravel
+        environment:
+            - CONTAINER_ROLE=app
+            - WWWUSER=${WWWUSER:-1000}
+            - WWWGROUP=${WWWGROUP:-1000}
+    frontend:
+        build:
+            context: .docker/frontend
+            dockerfile: local.Dockerfile
+            args:
+                WWWUSER: '${WWWUSER:-1000}'
+                WWWGROUP: '${WWWGROUP:-1000}'
+        container_name: laravel-frontend
+        restart: unless-stopped
+        working_dir: /var/www/html
+        volumes:
+            - '.:/var/www/html'
+            - 'node_modules:/var/www/html/node_modules'
+        command: ["sh", "-c", "npm install && npm run watch"]
+        depends_on:
+            - app
+        networks:
+            - laravel
+        environment:
+            - NODE_ENV=development
+            - WWWUSER=${WWWUSER:-1000}
+            - WWWGROUP=${WWWGROUP:-1000}
+    nginx:
+        build:
+            context: .docker/nginx
+            dockerfile: local.Dockerfile
+            args:
+                WWWUSER: '${WWWUSER:-1000}'
+                WWWGROUP: '${WWWGROUP:-1000}'
+        container_name: laravel-nginx
+        restart: unless-stopped
+        ports:
+            - '${APP_PORT:-80}:80'
+        volumes:
+            - '.:/var/www/html'
+            - '.docker/nginx/logs:/var/log/nginx'
+        depends_on:
+            - app
+            - frontend
+        networks:
+            - laravel
+    postgres:
+        image: 'postgres:17'
+        container_name: laravel-postgres
+        restart: unless-stopped
+        ports:
+            - '${FORWARD_DB_PORT:-5432}:5432'
+        environment:
+            PGPASSWORD: '${DB_PASSWORD:-secret}'
+            POSTGRES_DB: '${DB_DATABASE:-laravel}'
+            POSTGRES_USER: '${DB_USERNAME:-postgres}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+        volumes:
+            - 'postgres_data:/var/lib/postgresql/data'
+            - '.docker/postgres/init.sql:/docker-entrypoint-initdb.d/10-init.sql'
+        networks:
+            - laravel
+        healthcheck:
+            test: ['CMD', 'pg_isready', '-q', '-d', '${DB_DATABASE:-laravel}', '-U', '${DB_USERNAME:-postgres}']
+            retries: 3
+            timeout: 5s
+    redis:
+        image: 'redis:7-alpine'
+        container_name: laravel-redis
+        restart: unless-stopped
+        ports:
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
+        volumes:
+            - 'redis_data:/data'
+        networks:
+            - laravel
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'ping']
+            retries: 3
+            timeout: 5s
+    mailpit:
+        image: 'axllent/mailpit:latest'
+        container_name: laravel-mailpit
+        restart: unless-stopped
+        ports:
+            - '${FORWARD_MAILPIT_PORT:-1025}:1025'
+            - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+        networks:
+            - laravel
+networks:
+    laravel:
+        driver: bridge
+volumes:
+    postgres_data:
+        driver: local
+    redis_data:
+        driver: local
+    node_modules:
+        driver: local

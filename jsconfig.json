@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["resources/js/*"],
+      "@/shared/*": ["resources/js/shared/*"],
+      "@/features/*": ["resources/js/features/*"],
+      "@/assets/*": ["resources/js/assets/*"]
+    },
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": false
+  },
+  "include": [
+    "resources/js/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "public",
+    "vendor",
+    "dist"
+  ]
+} 
