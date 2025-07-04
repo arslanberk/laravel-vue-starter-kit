@@ -271,7 +271,6 @@ This project is open-sourced software licensed under the [MIT license](https://o
 ## 🆘 Getting Help
 
 - **Issues:** [GitHub Issues](https://github.com/arslanberk/laravel-vue-starter-kit/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/arslanberk/laravel-vue-starter-kit/discussions)
 - **Laravel Docs:** [laravel.com/docs](https://laravel.com/docs)
 - **Vue.js Docs:** [vuejs.org/guide](https://vuejs.org/guide/)
 - **VueUse Guide:** [vueuse.org/guide](https://vueuse.org/guide/)
