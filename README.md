@@ -34,16 +34,16 @@ Many developers love Laravel but don't want to learn framework-specific solution
 ## 📸 Screenshots
 
 ### Landing Page (Dark/Light Mode)
-![Landing Dark](.docs/landing-dark.png) ![Landing Light](.docs/landing-light.png)
+![Landing Dark](/docs/landing-dark.png) ![Landing Light](/docs/landing-light.png)
 
 ### Authentication Pages
-![Login](.docs/login.png) ![Register](.docs/register.png)
+![Login](/docs/login.png) ![Register](/docs/register.png)
 
 ### Dashboard & Settings
-![Dashboard](.docs/dashboard-skeleton.png) ![Settings](.docs/settings-overview.png)
+![Dashboard](/docs/dashboard-skeleton.png) ![Settings](/docs/settings-overview.png)
 
 ### Two-Factor Authentication Setup
-![Two Factor Setup](.docs/two-factor-setup.png)
+![Two Factor Setup](/docs/two-factor-setup.png)
 
 ## 📁 Project Structure
 
